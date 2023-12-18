@@ -1,0 +1,76 @@
+$primary-bg-color: #3f093f;
+$primary-text-color: #fff;
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+html[data-theme='light'] body {
+  $primary-bg-color: #ffff00;
+  $primary-text-color: #3f093f;
+  background-color: $primary-bg-color;
+  color: $primary-text-color;
+
+  a {
+    color: $primary-text-color;
+  }
+}
+
+body {
+  background-color: $primary-bg-color;
+  color: $primary-text-color;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  width: 100%;
+  height: 100%;
+
+  a.active {
+    color: yellow;
+    font-weight: 600;
+  }
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+
+  main {
+    width: 80%;
+    margin: 1rem auto;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: $primary-text-color;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+input, textarea {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  border: none;
+  outline: none;
+}
+
+.centered-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+p.center {
+  text-align: center;
+}

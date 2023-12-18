@@ -1,0 +1,36 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 14rem;
+
+  &.input-error {
+    input {
+      border: 1.5px solid rgb(214, 31, 31);
+    }
+  }
+
+  label.required {
+    &::after {
+      content: '*';
+      margin-left: .2rem;
+    }
+  }
+
+  input, textarea, select {
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    border: .1px solid #000;
+    outline: none;
+    background-color: #faefef;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  & > p {
+    color: rgb(214, 31, 31);
+    text-align: center;
+  }
+}
+

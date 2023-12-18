@@ -1,0 +1,11 @@
+#theme_mode_switch_container {
+  input {
+    display: none;
+  }
+  label {
+    cursor: pointer;
+    svg {
+      width: 2rem;
+    }
+  }
+}
