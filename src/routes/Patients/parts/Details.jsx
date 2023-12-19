@@ -1,6 +1,7 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {toast} from "react-toastify";
 import dayjs from "dayjs";
+import {Link} from "react-router-dom";
 import Button from "../../../components/Button/Button.jsx";
 import Input from "../../../components/Input/Input.jsx";
 import Loader from "../../../components/Loader/Loader.jsx";
@@ -9,8 +10,9 @@ import {AppContext} from "../../../context/appContext.jsx";
 import {usePatientStore} from "../../../store/patientStore.js";
 import {useClientStore} from "../../../store/clientStore.js";
 import axios from "../../../api/axios.js";
-import {phoneValidator} from "../../../utils/validator.js";
+import {dateValidator, numberValidator, phoneValidator, stringRequiredValidator} from "../../../utils/validators.js";
 import {colors} from "../../../constants/colors.js";
+import Select from "../../../components/Select/Select.jsx";
 
 import './Details.scss';
 
@@ -18,12 +20,14 @@ const Details = ({patient, client}) => {
     const {darkMode} = useContext(AppContext);
 
     const {editPatient} = usePatientStore(state => state);
-    const {editClient} = useClientStore(state => state);
+    const {editClient, clients} = useClientStore(state => state);
 
     const [editMode, setEditMode] = useState(false);
     const [errors, setErrors] = useState([]);
     const [date, setDate] = useState(patient.birth_date ? new Date(patient.birth_date) : new Date());
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedClient, setSelectedClient] = useState(null);
+    const [clientOptions, setClientOptions] = useState(null);
 
     const [patientData, setPatientData] = useState({
         name: patient?.name,
@@ -35,7 +39,7 @@ const Details = ({patient, client}) => {
         allergies: patient?.allergies || '',
     });
 
-    const [clientData, setClientData] = useState({
+    const initialClientData = {
         first_name: client?.first_name || '',
         last_name: client?.last_name || '',
         phone_number: client?.phone_number || '',
@@ -43,7 +47,17 @@ const Details = ({patient, client}) => {
         postcode: client?.postcode || '',
         street: client?.street || '',
         street_number: client?.street_number || '',
-    });
+    }
+
+    const [clientData, setClientData] = useState(initialClientData);
+
+    useEffect(() => {
+        if (patient && patient.clientId && !clients) return;
+        const options = clients.map(c => ({value: c.id, label: c?.first_name + ' ' + c?.last_name}));
+        options.unshift({value: '', label: ''});
+        console.log(options)
+        setClientOptions(options);
+    }, [patient, clients])
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -52,19 +66,27 @@ const Details = ({patient, client}) => {
 
         const _errors = [];
 
-        patientData.name.length === 0 && _errors.push('name');
-        patientData.species.length === 0 && _errors.push('species');
-        patientData.strain.length === 0 && _errors.push('strain');
-        patientData.coloration.length === 0 && _errors.push('coloration');
-        patientData.weight < 0 && _errors.push('weight');
+        !stringRequiredValidator(patientData.name) && _errors.push('name');
+        !stringRequiredValidator(patientData.species) && _errors.push('species');
+        !stringRequiredValidator(patientData.strain) && _errors.push('strain');
+        !stringRequiredValidator(patientData.coloration) && _errors.push('coloration');
+        (patientData.weight < 0) && _errors.push('weight');
 
-        clientData.first_name.length === 0 && _errors.push('first_name');
-        clientData.last_name.length === 0 && _errors.push('last_name');
-        clientData.city.length === 0 && _errors.push('city');
-        clientData.postcode.length === 0 && _errors.push('postcode');
-        clientData.street.length === 0 && _errors.push('street');
-        clientData.street_number.length === 0 && _errors.push('street_number');
-        (!clientData.phone_number || !phoneValidator(clientData.phone_number)) && _errors.push('phone_number');
+        if (patient.clientId) {
+            !stringRequiredValidator(clientData.first_name) && _errors.push('first_name');
+            !stringRequiredValidator(clientData.last_name) && _errors.push('last_name');
+            !stringRequiredValidator(clientData.city) && _errors.push('city');
+            !stringRequiredValidator(clientData.postcode) && _errors.push('postcode');
+            !stringRequiredValidator(clientData.street) && _errors.push('street');
+            !stringRequiredValidator(clientData.street_number) && _errors.push('street_number');
+            (!clientData.phone_number || !phoneValidator(clientData.phone_number)) && _errors.push('phone_number');
+        }
+
+        const birth_date = dayjs(date).format('YYYY-MM-DD');
+
+        if (!dateValidator(birth_date)) {
+            _errors.push('birth_date');
+        }
 
         if (_errors.length > 0) {
             setErrors(_errors);
@@ -76,16 +98,20 @@ const Details = ({patient, client}) => {
         let isClientRequestError = false;
         let isPatientRequestError = false;
 
-        const birth_date = dayjs(date).format('YYYY-MM-DD');
-
         if (patient.id) {
             try {
-                const result = await axios.put(`/patients/${patient.id}`, {
+                const _data = {
                     ...patientData,
                     birth_date,
                     weight: parseFloat(patientData.weight)
-                });
-                editPatient(patient.id, {...patientData, birth_date});
+                };
+                if (!patient.clientId && selectedClient && numberValidator(selectedClient.value)) {
+                    _data.clientId = selectedClient.value;
+                }
+                const result = await axios.put(`/patients/${patient.id}`, _data);
+                editPatient(patient.id, result.data);
+                const client = clients.find(c => c.id === result.data.clientId);
+                setClientData(initialClientData);
                 console.debug('Details :: submitHandler', result);
             } catch (err) {
                 console.error('Details :: submitHandler', err);
@@ -93,7 +119,7 @@ const Details = ({patient, client}) => {
             }
         }
 
-        if (client.id) {
+        if (patient.clientId && client.id) {
             try {
                 const result = await axios.put(`/clients/${client.id}`, clientData);
                 editClient(client.id, result.data);
@@ -198,7 +224,7 @@ const Details = ({patient, client}) => {
         </div>
         <div className="client">
             <p>Klient</p>
-            {editMode && <div className="fields">
+            {editMode && patient.clientId && <div className="fields">
                 <Input required id={'first_name'} name={'first_name'} label={'Imię'} value={clientData.first_name}
                        onChange={onChangeClientDataHandler} hasError={errors.includes('first_name')}
                        errorText={'Pole wymagane'}/>
@@ -223,7 +249,24 @@ const Details = ({patient, client}) => {
                        errorText={'Wymagany format: +XXYYYYYYYYY'}/>
             </div>}
 
-            {!editMode && <div className={`fields ${darkMode ? 'dark' : 'light'}`}>
+            {editMode && !patient.clientId && <div className="no-client-info">
+                <p>
+                    {clients && clients.length > 0 ? 'Wybierz klienta z listy lub utwórz nowego w zakładce ' : 'Utwórz klienta w zakładce '}
+                    <Link style={{color: darkMode ? colors.yellow : colors.purple}} to={'/clients'}>Klienci</Link></p>
+                {clients && clients.length > 0 &&
+                    <Select id={'selectedClient'} value={selectedClient ? selectedClient : null}
+                            options={clientOptions}
+                            onChange={(e) => {
+                                const _client = clientOptions.find(o => o.value === parseInt(e.target.selectedOptions[0].value));
+                                setSelectedClient(_client);
+                            }}
+                    />}
+            </div>}
+
+            {!editMode && !patient.clientId && <div className="no-client-info">
+                <p style={{color: colors.red}}>Pacjent nie ma przypisanego klienta (właściciela)</p>
+            </div>}
+            {!editMode && patient.clientId && <div className={`fields ${darkMode ? 'dark' : 'light'}`}>
                 <dl>
                     <dd>Imię</dd>
                     <dt>{client?.first_name || '--'}</dt>

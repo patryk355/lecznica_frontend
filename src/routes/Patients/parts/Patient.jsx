@@ -9,9 +9,6 @@ import axios from "../../../api/axios.js";
 import Details from "./Details.jsx";
 import Appointments from "../../Appointments/Appointments.jsx";
 import Sicknesses from "./Sicknesses.jsx";
-import Treatments from "./Treatments.jsx";
-import Vaccinations from "./Vaccinations.jsx";
-import Prescriptions from "./Prescriptions.jsx";
 import Button from "../../../components/Button/Button.jsx";
 import Modal from "../../../components/Modal/Modal.jsx";
 import ArchiveIcon from "../../../icons/ArchiveIcon.jsx";
@@ -36,6 +33,7 @@ const Patient = () => {
             const result = await axios.put(`/charts/${chart.id}`, {is_active: !chart.is_active});
             console.debug('Patient :: updateChart', result);
             editChart(chart.id, result.data);
+            toast.success(chart.is_active ? 'Karta pacjenta została zarchiwizowana' : 'Karta pacjenta została aktywowana');
         } catch (err) {
             console.error('Patient :: updateChart', err);
             toast.error(chart.is_active ? 'Nie udało się zarchiwizować karty pacjenta' : 'Nie udało się aktywować karty pacjenta');

@@ -119,16 +119,14 @@ const Patients = () => {
                                     <dt>Imię:</dt>
                                     <dd>{chart.patient?.name || '--'}</dd>
                                 </dl>
-                                {
-                                    <dl>
-                                        <dt>Imię i nazwisko klienta:</dt>
-                                        <dd>
-                                            {chart.client && chart.client.first_name && chart.client.last_name
-                                                ? chart.client.first_name + ' ' + chart.client.last_name
-                                                : '--'}
-                                        </dd>
-                                    </dl>
-                                }
+                                <dl>
+                                    <dt>Imię i nazwisko klienta:</dt>
+                                    <dd>
+                                        {chart.client && chart.client.first_name && chart.client.last_name
+                                            ? chart.client.first_name + ' ' + chart.client.last_name
+                                            : '--'}
+                                    </dd>
+                                </dl>
                             </Card>
                         );
                     })}

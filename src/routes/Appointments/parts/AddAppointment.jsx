@@ -10,6 +10,7 @@ import Loader from "../../../components/Loader/Loader.jsx";
 import {useAppointmentStore} from "../../../store/appointmentStore.js";
 import axios from "../../../api/axios.js";
 import {colors} from "../../../constants/colors.js";
+import {dateTimeValidator, stringRequiredValidator} from "../../../utils/validators.js";
 
 const types = [
     {value: 'konsultacja', label: 'konsultacja'},
@@ -54,11 +55,13 @@ const AddAppointment = ({patient, doctors, onClose, currentRow}) => {
 
         const _errors = [];
 
-        if (!date) {
+        const appointment_date = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+
+        if (!dateTimeValidator(appointment_date)) {
             _errors.push('date');
         }
 
-        if (!type.value) {
+        if (!stringRequiredValidator(type.value)) {
             _errors.push('type');
         }
 
@@ -73,7 +76,7 @@ const AddAppointment = ({patient, doctors, onClose, currentRow}) => {
         }
 
         const data = {
-            date: dayjs(date).format('YYYY-MM-DD HH:mm:ss'),
+            date: appointment_date,
             type: type.value,
             notes: notes.trim(),
             doctorId: parseInt(doctor.value),
