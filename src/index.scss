@@ -74,3 +74,18 @@ input, textarea {
 p.center {
   text-align: center;
 }
+
+dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 1rem;
+
+  dt {
+    text-align: left;
+  }
+
+  dd {
+    text-align: right;
+  }
+}

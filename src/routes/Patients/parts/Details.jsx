@@ -55,7 +55,6 @@ const Details = ({patient, client}) => {
         if (patient && patient.clientId && !clients) return;
         const options = clients.map(c => ({value: c.id, label: c?.first_name + ' ' + c?.last_name}));
         options.unshift({value: '', label: ''});
-        console.log(options)
         setClientOptions(options);
     }, [patient, clients])
 
@@ -191,34 +190,34 @@ const Details = ({patient, client}) => {
             </div>}
             {!editMode && <div className={`fields ${darkMode ? 'dark' : 'light'}`}>
                 <dl>
-                    <dd>Imię</dd>
-                    <dt>{patient?.name || '--'}</dt>
+                    <dt>Imię</dt>
+                    <dd>{patient?.name || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Gatunek</dd>
-                    <dt>{patient?.species || '--'}</dt>
+                    <dt>Gatunek</dt>
+                    <dd>{patient?.species || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Rasa</dd>
-                    <dt>{patient?.strain || '--'}</dt>
+                    <dt>Rasa</dt>
+                    <dd>{patient?.strain || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Umaszczenie</dd>
-                    <dt>{patient?.coloration || '--'}</dt>
+                    <dt>Umaszczenie</dt>
+                    <dd>{patient?.coloration || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Data urodzenia</dd>
-                    <dt>{patient.birth_date ? dayjs(patient.birth_date).format('YYYY-MM-DD') : '--'}</dt>
+                    <dt>Data urodzenia</dt>
+                    <dd>{patient.birth_date ? dayjs(patient.birth_date).format('YYYY-MM-DD') : '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Waga</dd>
-                    <dt>{patient?.weight || 0} kg</dt>
+                    <dt>Waga</dt>
+                    <dd>{patient?.weight || 0} kg</dd>
                 </dl>
                 <dl style={{alignItems: 'flex-start'}}>
-                    <dd>Leki: <br/> <br/>{patient?.drugs || 'Brak'}</dd>
+                    <dt>Leki: <br/> <br/>{patient?.drugs || 'Brak'}</dt>
                 </dl>
                 <dl style={{alignItems: 'flex-start'}}>
-                    <dd>Alergie: <br/> <br/> {patient?.allergies || 'Brak'}</dd>
+                    <dt>Alergie: <br/> <br/> {patient?.allergies || 'Brak'}</dt>
                 </dl>
             </div>}
         </div>
@@ -268,32 +267,32 @@ const Details = ({patient, client}) => {
             </div>}
             {!editMode && patient.clientId && <div className={`fields ${darkMode ? 'dark' : 'light'}`}>
                 <dl>
-                    <dd>Imię</dd>
-                    <dt>{client?.first_name || '--'}</dt>
+                    <dt>Imię</dt>
+                    <dd>{client?.first_name || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Nazwisko</dd>
-                    <dt>{client?.last_name || '--'}</dt>
+                    <dt>Nazwisko</dt>
+                    <dd>{client?.last_name || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Miejscowość</dd>
-                    <dt>{client?.city || '--'}</dt>
+                    <dt>Miejscowość</dt>
+                    <dd>{client?.city || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Kod pocztowy</dd>
-                    <dt>{client?.postcode || '--'}</dt>
+                    <dt>Kod pocztowy</dt>
+                    <dd>{client?.postcode || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Ulica</dd>
-                    <dt>{client?.street || '--'}</dt>
+                    <dt>Ulica</dt>
+                    <dd>{client?.street || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Numer domu</dd>
-                    <dt>{client?.street_number || '--'}</dt>
+                    <dt>Numer domu</dt>
+                    <dd>{client?.street_number || '--'}</dd>
                 </dl>
                 <dl>
-                    <dd>Telefon</dd>
-                    <dt>{client?.phone_number || '--'}</dt>
+                    <dt>Telefon</dt>
+                    <dd>{client?.phone_number || '--'}</dd>
                 </dl>
             </div>}
         </div>

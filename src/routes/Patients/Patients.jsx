@@ -7,6 +7,7 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import AddIcon from '../../icons/AddIcon';
 import Card from '../../components/Card/Card';
+import AddPatient from "./parts/AddPatient.jsx";
 import {usePatientStore} from '../../store/patientStore';
 import {useChartStore} from "../../store/chartStore.js";
 import {useClientStore} from "../../store/clientStore.js";
@@ -26,6 +27,7 @@ const Patients = () => {
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState(null);
     const [filter, setFilter] = useState('active');
+    const [addMode, setAddMode] = useState(false);
 
     useEffect(() => {
         if (!charts || !patients || !clients) return;
@@ -61,78 +63,82 @@ const Patients = () => {
     }, [searchValue, fullData, filter]);
 
     return (
-        <div id='patients'>
-            <div className='actions'>
-                <div className={`filter ${darkMode ? 'light' : 'dark'}`}>
-                    <Button text='Aktywne' onClick={() => setFilter('active')}
-                            className={filter === 'active' ? 'active' : null}/>
-                    <Button text='Nieaktywne' onClick={() => setFilter('inactive')}
-                            className={filter === 'inactive' ? 'active' : null}/>
+        <>
+            {addMode && <AddPatient onClose={() => setAddMode(false)}/>}
+            <div id='patients'>
+                <div className='actions'>
+                    <div className={`filter ${darkMode ? 'light' : 'dark'}`}>
+                        <Button text='Aktywne' onClick={() => setFilter('active')}
+                                className={filter === 'active' ? 'active' : null}/>
+                        <Button text='Nieaktywne' onClick={() => setFilter('inactive')}
+                                className={filter === 'inactive' ? 'active' : null}/>
+                    </div>
+                    <Input
+                        placeholder='Wyszukaj kartę pacjenta...'
+                        inputWidth='30rem'
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    <Button
+                        text='Utwórz kartę pacjenta'
+                        color={darkMode ? 'light' : 'dark'}
+                        icon={<AddIcon/>}
+                        bgColor={colors.green}
+                        textColor={colors.white}
+                        onClick={() => setAddMode(true)}
+                    />
                 </div>
-                <Input
-                    placeholder='Wyszukaj kartę pacjenta...'
-                    inputWidth='30rem'
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                />
-                <Button
-                    text='Utwórz kartę pacjenta'
-                    color={darkMode ? 'light' : 'dark'}
-                    icon={<AddIcon/>}
-                    bgColor={colors.green}
-                    textColor={colors.white}
-                />
-            </div>
 
-            {isLoading && (
-                <div className='centered-loader'>
-                    <Loader color={darkMode ? colors.yellow : colors.purple}/>
-                </div>
-            )}
-            {!isLoading && data && data.length === 0 && (
-                <p className='center'>Brak danych.</p>
-            )}
-            {!isLoading && data && data.length > 0 && (
-                <div className='patients-container'>
-                    {data.map((chart) => {
-                        return (
-                            <Card
-                                key={chart.id}
-                                bgColor={darkMode ? colors.lightPurple : colors.lightYellow}
-                                className='patient'
-                                onClick={() => {
-                                    navigate(`/patients/${chart.patient.id}`)
-                                }}
-                            >
-                                <dl>
-                                    <dt>Numer karty:</dt>
-                                    <dd
-                                        style={{
-                                            color: darkMode ? colors.yellow : colors.purple,
-                                            fontSize: '1.6rem',
-                                        }}
-                                    >
-                                        {chart?.number}
-                                    </dd>
-                                </dl>
-                                <dl>
-                                    <dt>Imię:</dt>
-                                    <dd>{chart.patient?.name || '--'}</dd>
-                                </dl>
-                                <dl>
-                                    <dt>Imię i nazwisko klienta:</dt>
-                                    <dd>
-                                        {chart.client && chart.client.first_name && chart.client.last_name
-                                            ? chart.client.first_name + ' ' + chart.client.last_name
-                                            : '--'}
-                                    </dd>
-                                </dl>
-                            </Card>
-                        );
-                    })}
-                </div>
-            )}
-        </div>
+                {isLoading && (
+                    <div className='centered-loader'>
+                        <Loader color={darkMode ? colors.yellow : colors.purple}/>
+                    </div>
+                )}
+                {!isLoading && data && data.length === 0 && (
+                    <p className='center'>Brak danych.</p>
+                )}
+                {!isLoading && data && data.length > 0 && (
+                    <div className='patients-container'>
+                        {data.map((chart) => {
+                            return (
+                                <Card
+                                    key={chart.id}
+                                    bgColor={darkMode ? colors.lightPurple : colors.lightYellow}
+                                    className='patient'
+                                    onClick={() => {
+                                        navigate(`/patients/${chart.patient.id}`)
+                                    }}
+                                >
+                                    <dl>
+                                        <dt>Numer karty:</dt>
+                                        <dd
+                                            style={{
+                                                color: darkMode ? colors.yellow : colors.purple,
+                                                fontSize: '1.6rem',
+                                            }}
+                                        >
+                                            {chart?.number}
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>Imię:</dt>
+                                        <dd>{chart.patient?.name || '--'}</dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>Imię i nazwisko klienta:</dt>
+                                        <dd>
+                                            {chart.client && chart.client.first_name && chart.client.last_name
+                                                ? chart.client.first_name + ' ' + chart.client.last_name
+                                                : '--'}
+                                        </dd>
+                                    </dl>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
 

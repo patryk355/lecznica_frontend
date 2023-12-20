@@ -45,23 +45,17 @@
     align-items: flex-start;
 
     &.dark {
-      dt {
+      dd {
         font-size: 1.1rem;
         color: #ffff00;
       }
     }
 
     &.light {
-      dt {
+      dd {
         font-size: 1.1rem;
         color: #3f093f;
       }
-    }
-
-    dl {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
     }
 
     textarea {

@@ -2,18 +2,4 @@
   justify-self: center;
   padding: 2rem;
   border-radius: 5px;
-
-  dl {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    dt {
-      text-align: left;
-    }
-
-    dd {
-      text-align: right;
-    }
-  }
 }
