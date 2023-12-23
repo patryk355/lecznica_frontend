@@ -44,7 +44,7 @@ const Input = ({
                                               placeholder={placeholder}
                                               value={value}
                                               onChange={onChange}
-                                              maxLength={500}
+                                              maxLength={255}
                                               defaultValue={defaultValue}></textarea>}
             {type !== 'date' && type !== 'datetime' && type !== 'textarea' && <input
                 id={id}

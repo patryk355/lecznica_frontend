@@ -1,11 +1,10 @@
+import {useContext} from "react";
 import ReactDOM from 'react-dom';
+import {AppContext} from "../../context/appContext.jsx";
 
 import './Modal.scss';
-import {useUserStore} from "../../store/userStore.js";
-import {AppContext} from "../../context/appContext.jsx";
-import {useContext} from "react";
 
-const Modal = ({children, onClose, width, disableOverlayOnClose=false}) => {
+const Modal = ({children, onClose, width, disableOverlayOnClose = false}) => {
     const {darkMode} = useContext(AppContext);
 
     return ReactDOM.createPortal(

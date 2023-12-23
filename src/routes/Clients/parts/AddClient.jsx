@@ -128,9 +128,11 @@ const AddClient = ({client, onClose}) => {
                            hasError={errors.includes('postcode')} errorText={'Pole wymagane'}/>
                     <Input id={'street'} label={'Ulica'} value={data.street} onChange={onChangeHandler}
                            hasError={errors.includes('street')} errorText={'Pole wymagane'}/>
-                    <Input id={'street_number'} label={'Numer domu'} value={data.street_number} onChange={onChangeHandler}
+                    <Input id={'street_number'} label={'Numer domu'} value={data.street_number}
+                           onChange={onChangeHandler}
                            hasError={errors.includes('street_number')} errorText={'Pole wymagane'}/>
-                    <Input id={'phone_number'} label={'Numer telefonu'} value={data.phone_number} onChange={onChangeHandler}
+                    <Input id={'phone_number'} label={'Numer telefonu'} value={data.phone_number}
+                           onChange={onChangeHandler}
                            hasError={errors.includes('phone_number')} errorText={'Nieprawidłowy numer telefonu'}/>
                 </div>
                 {isLoading ? <div className="centered-loader">

@@ -1,17 +1,14 @@
 import {useState} from "react";
 import dayjs from "dayjs";
 import Button from "../../components/Button/Button.jsx";
-import EditIcon from "../../icons/EditIcon.jsx";
 import {colors} from "../../constants/colors.js";
 import {useAppointmentStore} from "../../store/appointmentStore.js";
 import {useDoctorStore} from "../../store/doctorStore.js";
 import AddIcon from "../../icons/AddIcon.jsx";
 import AddAppointment from "./parts/AddAppointment.jsx";
+import Appointment from "./parts/Appointment.jsx";
 
 import './Appointments.scss';
-import Treatments from "../Patients/parts/Treatments.jsx";
-import Vaccinations from "../Patients/parts/Vaccinations.jsx";
-import Prescriptions from "../Patients/parts/Prescriptions.jsx";
 
 const Appointments = ({patient}) => {
     const {appointments: allAppointments} = useAppointmentStore(state => state);
@@ -39,7 +36,7 @@ const Appointments = ({patient}) => {
             setAddMode(false);
             setCurrentRow(null);
         }}/>}
-        <div className="appointments">
+        {!currentRow && <div className="appointments">
             <div className="table-container">
                 <table>
                     <thead>
@@ -48,7 +45,6 @@ const Appointments = ({patient}) => {
                         <th>Rodzaj</th>
                         <th>Lekarz</th>
                         <th>Uwagi</th>
-                        <th style={{textAlign: 'center'}}>Edytuj</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,17 +52,11 @@ const Appointments = ({patient}) => {
                     {appointments && doctors && appointments.map(a => {
                         const doctor = doctors.find(d => d.id === a.doctorId);
 
-                        return <tr key={a.id}>
+                        return <tr key={a.id} onClick={() => setCurrentRow(a)}>
                             <td>{a.date ? dayjs(a.date).format('YYYY-MM-DD HH:mm') : '--'}</td>
                             <td>{a?.type || '--'}</td>
                             <td>{doctor && doctor.first_name && doctor.last_name ? doctor.first_name + ' ' + doctor.last_name : '--'}</td>
-                            <td>{a?.notes || 'Brak'}</td>
-                            <td>
-                                <span onClick={() => {
-                                    setAddMode(true);
-                                    setCurrentRow(a);
-                                }}><EditIcon/></span>
-                            </td>
+                            <td style={{overflowX: 'hidden'}}>{a?.notes.slice(0, 255) || 'Brak'}</td>
                         </tr>
                     })}
                     </tbody>
@@ -76,7 +66,9 @@ const Appointments = ({patient}) => {
                 <Button text={'Dodaj'} onClick={() => setAddMode(true)} bgColor={colors.green} textColor={colors.white}
                         icon={<AddIcon/>}/>
             </div>
-        </div>
+        </div>}
+        {currentRow && <Appointment patient={patient} doctors={doctors} appointment={currentRow}
+                                    onClose={() => setCurrentRow(null)}/>}
     </>
 }
 

@@ -21,7 +21,7 @@ const AddPatient = ({onClose}) => {
 
     const {clients, addClient, removeClient} = useClientStore(state => state);
     const {addPatient} = usePatientStore(state => state);
-    const {addChart} = useChartStore(state => state);
+    const {addChart, charts} = useChartStore(state => state);
 
     const [chartNumber, setChartNumber] = useState('');
     const [patientData, setPatientData] = useState({
@@ -65,14 +65,24 @@ const AddPatient = ({onClose}) => {
 
         const birth_date = dayjs(patientData.birth_date).format('YYYY-MM-DD');
 
+        if (!stringRequiredValidator(chartNumber)) {
+            _errors.push('chartNumber');
+        } else {
+            if (charts && charts.length > 0) {
+                charts.forEach(chart => {
+                    if (chart.number.trim() === chartNumber.trim()) {
+                        _errors.push('chartNumberExists');
+                    }
+                });
+            }
+        }
+
         !stringRequiredValidator(patientData.name) && _errors.push('name');
         !stringRequiredValidator(patientData.species) && _errors.push('species');
         !stringRequiredValidator(patientData.strain) && _errors.push('strain');
         !stringRequiredValidator(patientData.coloration) && _errors.push('coloration');
         !dateValidator(birth_date) && _errors.push('birth_date');
         parseFloat(patientData.weight < 0) && _errors.push('weight');
-
-        !stringRequiredValidator(chartNumber) && _errors.push('chartNumber');
 
         if (client && client.value === 0) {
             !stringRequiredValidator(clientData.first_name) && _errors.push('first_name');
@@ -172,8 +182,8 @@ const AddPatient = ({onClose}) => {
                 <div className="chart-number">
                     <Input id={'chartNumber'} value={chartNumber}
                            onChange={(e) => setChartNumber(e.target.value)}
-                           hasError={errors.includes('chartNumber')}
-                           errorText={'Pole wymagane'}/>
+                           hasError={errors.includes('chartNumberExists') || errors.includes('chartNumber')}
+                           errorText={errors.includes('chartNumberExists') ? 'Taki numer karty pacjenta już istnieje' : 'Pole wymagane'}/>
                 </div>
                 <h3 style={{color: darkMode ? colors.yellow : colors.purple}}>Pacjent</h3>
                 <div className="patient">

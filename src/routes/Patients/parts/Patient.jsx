@@ -5,10 +5,11 @@ import {AppContext} from '../../../context/appContext';
 import {usePatientStore} from "../../../store/patientStore.js";
 import {useChartStore} from "../../../store/chartStore.js";
 import {useClientStore} from "../../../store/clientStore.js";
+import {useUserStore} from "../../../store/userStore.js";
 import axios from "../../../api/axios.js";
 import Details from "./Details.jsx";
 import Appointments from "../../Appointments/Appointments.jsx";
-import Sicknesses from "./Sicknesses.jsx";
+import Sicknesses from "../../Sicknesses/Sicknesses.jsx";
 import Button from "../../../components/Button/Button.jsx";
 import Modal from "../../../components/Modal/Modal.jsx";
 import ArchiveIcon from "../../../icons/ArchiveIcon.jsx";
@@ -19,6 +20,7 @@ const Patient = () => {
     const {patientId} = useParams();
     const {darkMode} = useContext(AppContext);
 
+    const {user} = useUserStore(state => state);
     const patient = usePatientStore(state => state.patients).find(p => p.id === parseInt(patientId));
     const chart = useChartStore(state => state.charts).find(c => c.patientId === parseInt(patientId));
     const {editChart} = useChartStore(state => state);
@@ -56,10 +58,10 @@ const Patient = () => {
             </Modal>}
             <div style={{display: 'flex', alignItems: 'center', marginBottom: '2rem', justifyContent: 'space-between'}}>
                 <h2 style={{textAlign: 'center'}}>Numer karty pacjenta: {chart?.number}</h2>
-                <Button onClick={() => setShowConfirmArchiveModal(true)}
-                        text={chart.is_active ? 'Archiwizuj' : 'Aktywuj'} textColor={colors.white}
-                        bgColor={chart.is_active ? colors.red : colors.green}
-                        icon={chart.is_active ? <ArchiveIcon/> : <DocumentCheckIcon/>}/>
+                {user.is_admin && <Button onClick={() => setShowConfirmArchiveModal(true)}
+                                          text={chart.is_active ? 'Archiwizuj' : 'Aktywuj'} textColor={colors.white}
+                                          bgColor={chart.is_active ? colors.red : colors.green}
+                                          icon={chart.is_active ? <ArchiveIcon/> : <DocumentCheckIcon/>}/>}
             </div>
             <div className={`patient-container ${darkMode ? 'dark' : 'light'}`}
                  style={{backgroundColor: darkMode ? colors.lightPurple : colors.lightYellow}}>
@@ -72,10 +74,10 @@ const Patient = () => {
                         chorób
                     </li>
                 </ul>
-                <div className="content">
+                <div className={`${currentTab === 1 ? '' : 'content'}`}>
                     {currentTab === 0 && <Details patient={patient} client={client}/>}
                     {currentTab === 1 && <Appointments patient={patient}/>}
-                    {currentTab === 2 && <Sicknesses/>}
+                    {currentTab === 2 && <Sicknesses patient={patient}/>}
                 </div>
             </div>
         </>

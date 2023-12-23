@@ -23,3 +23,7 @@ export const dateValidator = (value) => {
 export const dateTimeValidator = (value) => {
     return typeof value === 'string' && dayjs(value, 'YYYY-MM-DD HH:mm', true).isValid();
 }
+
+export const onlyDigitsValidator = (value) => {
+    return !!/^\d+$/.test(value);
+}

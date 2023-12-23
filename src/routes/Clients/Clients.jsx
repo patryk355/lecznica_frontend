@@ -1,5 +1,4 @@
 import {useContext, useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
 import {AppContext} from '../../context/appContext';
 import Loader from '../../components/Loader/Loader';
 import Input from '../../components/Input/Input';
@@ -8,17 +7,19 @@ import Card from '../../components/Card/Card';
 import AddIcon from '../../icons/AddIcon';
 import {useClientStore} from "../../store/clientStore.js";
 import {colors} from '../../constants/colors';
-
-import './Clients.scss';
 import UserIcon from "../../icons/UserIcon.jsx";
 import EditIcon from "../../icons/EditIcon.jsx";
 import DeleteIcon from "../../icons/DeleteIcon.jsx";
 import DeleteClient from "./parts/DeleteClient.jsx";
 import AddClient from "./parts/AddClient.jsx";
+import {useUserStore} from "../../store/userStore.js";
+
+import './Clients.scss';
 
 const Clients = () => {
     const {darkMode} = useContext(AppContext);
 
+    const {user} = useUserStore((state) => state);
     const {clients} = useClientStore((state) => state);
     const [isLoading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -58,14 +59,14 @@ const Clients = () => {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
-                <Button
+                {user.is_admin && <Button
                     text='Dodaj klienta'
                     color={darkMode ? 'light' : 'dark'}
                     icon={<AddIcon/>}
                     bgColor={colors.green}
                     textColor={colors.white}
                     onClick={() => setAddMode(true)}
-                />
+                />}
             </div>
 
             {isLoading && (
@@ -129,7 +130,7 @@ const Clients = () => {
                                         text={'Edytuj'}
                                         icon={<EditIcon/>}
                                     />
-                                    <Button
+                                    {user.is_admin && <Button
                                         onClick={() => {
                                             setDeleteMode(true);
                                             setSelectedClient(client);
@@ -138,7 +139,7 @@ const Clients = () => {
                                         textColor={colors.white}
                                         text={'Usuń'}
                                         icon={<DeleteIcon/>}
-                                    />
+                                    />}
                                 </div>
                             </Card>
                         );

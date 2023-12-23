@@ -11,6 +11,7 @@ import AddPatient from "./parts/AddPatient.jsx";
 import {usePatientStore} from '../../store/patientStore';
 import {useChartStore} from "../../store/chartStore.js";
 import {useClientStore} from "../../store/clientStore.js";
+import {useUserStore} from "../../store/userStore.js";
 
 import './Patients.scss';
 
@@ -19,6 +20,7 @@ const Patients = () => {
 
     const {darkMode} = useContext(AppContext);
 
+    const {user} = useUserStore(state => state);
     const {patients} = usePatientStore((state) => state);
     const {charts} = useChartStore((state) => state);
     const {clients} = useClientStore((state) => state);
@@ -79,14 +81,14 @@ const Patients = () => {
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <Button
+                    {user.is_admin && <Button
                         text='Utwórz kartę pacjenta'
                         color={darkMode ? 'light' : 'dark'}
                         icon={<AddIcon/>}
                         bgColor={colors.green}
                         textColor={colors.white}
                         onClick={() => setAddMode(true)}
-                    />
+                    />}
                 </div>
 
                 {isLoading && (

@@ -24,7 +24,7 @@ const AddAppointment = ({patient, doctors, onClose, currentRow}) => {
     const doctorOptions = doctors.map(d => ({value: d.id, label: d?.first_name + ' ' + d?.last_name}));
     const {addAppointment, editAppointment} = useAppointmentStore(state => state);
 
-    const [date, setDate] = useState(currentRow ? new Date(currentRow.date) : new Date());
+    const [date, setDate] = useState(currentRow ? new Date(currentRow.date) : null);
     const [notes, setNotes] = useState(currentRow ? currentRow.notes : '');
     const [type, setType] = useState(types[0]);
     const [doctor, setDoctor] = useState(doctorOptions[0]);
@@ -46,7 +46,7 @@ const AddAppointment = ({patient, doctors, onClose, currentRow}) => {
             }
         }
 
-    }, [currentRow, types]);
+    }, [currentRow, doctorOptions]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -132,7 +132,11 @@ const AddAppointment = ({patient, doctors, onClose, currentRow}) => {
                                                   const option = doctorOptions.find(d => d.value === parseInt(e.target.selectedOptions[0].value));
                                                   setDoctor(option);
                                               }} hasError={errors.includes('doctor')} errorText={'Pole wymagane'}/>}
-                    <Input type={'textarea'} label={'Uwagi'} value={notes} onChange={(e) => setNotes(e.target.value)}/>
+                    <div></div>
+                    <div>
+                        <Input type={'textarea'} label={'Uwagi'} value={notes}
+                               onChange={(e) => setNotes(e.target.value)}/>
+                    </div>
                 </div>
                 {isLoading ? <div className="centered-loader">
                     <Loader color={darkMode ? colors.yellow : colors.purple}/>

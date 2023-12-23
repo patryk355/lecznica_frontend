@@ -7,11 +7,6 @@ import Patients from './routes/Patients/Patients';
 import Patient from "./routes/Patients/parts/Patient.jsx";
 import Clients from './routes/Clients/Clients';
 import {usePatientStore} from './store/patientStore';
-import {
-    DUMMY_PRESCRIPTIONS, DUMMY_SICKNESSES,
-    DUMMY_TREATMENTS,
-    DUMMY_VACCINATIONS
-} from '../dummy_data';
 import {useAppointmentStore} from './store/appointmentStore';
 import {useChartStore} from './store/chartStore';
 import {useClientStore} from './store/clientStore';
@@ -20,6 +15,7 @@ import {usePrescriptionStore} from "./store/prescriptionStore.js";
 import {useTreatmentStore} from "./store/treatmentStore.js";
 import {useVaccinationStore} from "./store/vaccinationStore.js";
 import {useSicknessStore} from "./store/sicknessStore.js";
+import {useUserStore} from "./store/userStore.js";
 import axios from "./api/axios.js";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,6 +23,7 @@ import 'dayjs/locale/pl';
 
 const App = () => {
         const {isLogged} = useContext(AppContext);
+        const {user} = useUserStore((state) => state);
         const {setPatients} = usePatientStore((state) => state);
         const {setAppointments} = useAppointmentStore((state) => state);
         const {setCharts} = useChartStore((state) => state);
@@ -37,32 +34,42 @@ const App = () => {
         const {setVaccinations} = useVaccinationStore((state) => state);
         const {setSicknesses} = useSicknessStore((state) => state);
 
-        useEffect(() => {
-            setPrescriptions(DUMMY_PRESCRIPTIONS);
-            setTreatments(DUMMY_TREATMENTS);
-            setVaccinations(DUMMY_VACCINATIONS);
-            setSicknesses(DUMMY_SICKNESSES);
-        }, [setPrescriptions, setTreatments, setVaccinations, setSicknesses]);
-
         const fetchData = useCallback(async () => {
             const clientsResponse = await axios.get('/clients')
             const patientsResponse = await axios.get('/patients')
             const chartsResponse = await axios.get('/charts')
             const appointmentsResponse = await axios.get('/appointments')
             const doctorsResponse = await axios.get('/doctors')
+            const sicknessesResponse = await axios.get('/sicknesses')
+            const prescriptionsResponse = await axios.get('/prescriptions')
+            const treatmentsResponse = await axios.get('/treatments')
+            const vaccinationsResponse = await axios.get('/vaccinations')
 
             setClients(clientsResponse.data);
             setPatients(patientsResponse.data);
             setCharts(chartsResponse.data);
             setAppointments(appointmentsResponse.data)
             setDoctors(doctorsResponse.data);
-        }, []);
+            setSicknesses(sicknessesResponse.data);
+            setPrescriptions(prescriptionsResponse.data);
+            setTreatments(treatmentsResponse.data);
+            setVaccinations(vaccinationsResponse.data);
+        }, [setClients, setPatients, setCharts, setAppointments, setDoctors, setSicknesses, setPrescriptions, setTreatments, setVaccinations]);
 
         useEffect(() => {
             if (isLogged) {
                 fetchData();
             }
-        }, [isLogged]);
+        }, [isLogged, fetchData]);
+
+        useEffect(() => {
+            if (!user) return;
+            if (isLogged) {
+                document.title = `Lecznica dla zwierząt :: ${user.is_admin ? 'Recepcjonista' : 'Lekarz'}`
+            } else {
+                document.title = 'Lecznica dla zwierząt';
+            }
+        }, [isLogged, user]);
 
         return (
             <Routes>

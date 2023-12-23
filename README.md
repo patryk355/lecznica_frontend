@@ -6,3 +6,4 @@ Front-end do projektu studenckiego.
 - React
 - Zustand
 - Axios
+- SCSS
