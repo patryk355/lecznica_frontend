@@ -1,11 +1,8 @@
-import {useCallback, useContext, useEffect} from 'react';
+import {useCallback, useContext, useEffect, lazy, Suspense} from 'react';
 import {Navigate, Route, Routes} from 'react-router-dom';
 import {AppContext} from './context/appContext';
 import Login from './routes/Login/Login';
-import ProtectedLayout from './routes/ProtectedLayout/ProtectedLayout';
-import Patients from './routes/Patients/Patients';
-import Patient from "./routes/Patients/parts/Patient.jsx";
-import Clients from './routes/Clients/Clients';
+import {CenteredLoader} from "./components/Loader/Loader.jsx";
 import {usePatientStore} from './store/patientStore';
 import {useAppointmentStore} from './store/appointmentStore';
 import {useChartStore} from './store/chartStore';
@@ -20,6 +17,11 @@ import axios from "./api/axios.js";
 
 import "react-datepicker/dist/react-datepicker.css";
 import 'dayjs/locale/pl';
+
+const ProtectedLayout = lazy(() => import('./routes/ProtectedLayout/ProtectedLayout'));
+const Patients = lazy(() => import('./routes/Patients/Patients'));
+const Patient = lazy(() => import('./routes/Patients/parts/Patient.jsx'));
+const Clients = lazy(() => import('./routes/Clients/Clients'));
 
 const App = () => {
         const {isLogged} = useContext(AppContext);
@@ -74,10 +76,18 @@ const App = () => {
         return (
             <Routes>
                 {isLogged && (
-                    <Route path='/' element={<ProtectedLayout/>}>
-                        <Route path='patients' index element={<Patients/>}/>
-                        <Route path='patients/:patientId' index element={<Patient/>}/>
-                        <Route path='clients' index element={<Clients/>}/>
+                    <Route path='/' element={<Suspense fallback={<CenteredLoader/>}>
+                        <ProtectedLayout/>
+                    </Suspense>}>
+                        <Route path='patients' index element={<Suspense fallback={<CenteredLoader/>}>
+                            <Patients/>
+                        </Suspense>}/>
+                        <Route path='patients/:patientId' index element={<Suspense fallback={<CenteredLoader/>}>
+                            <Patient/>
+                        </Suspense>}/>
+                        <Route path='clients' index element={<Suspense fallback={<CenteredLoader/>}>
+                            <Clients/>
+                        </Suspense>}/>
                         <Route index element={<Navigate to='patients' replace/>}/>
                         <Route path='*' element={<Navigate to='patients' replace/>}/>
                     </Route>

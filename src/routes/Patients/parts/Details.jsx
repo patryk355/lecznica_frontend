@@ -109,8 +109,10 @@ const Details = ({patient, client}) => {
                 }
                 const result = await axios.put(`/patients/${patient.id}`, _data);
                 editPatient(patient.id, result.data);
-                const client = clients.find(c => c.id === result.data.clientId);
-                setClientData(initialClientData);
+                if (result.data.clientId) {
+                    const client = clients.find(c => c.id === result.data.clientId);
+                    setClientData(client);
+                }
                 console.debug('Details :: submitHandler', result);
             } catch (err) {
                 console.error('Details :: submitHandler', err);
