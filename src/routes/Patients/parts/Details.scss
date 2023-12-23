@@ -75,4 +75,16 @@
       width: 1.1rem;
     }
   }
+
+  @media (max-width: 1200px) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+
+    .fields {
+      & > div {
+        justify-self: center;
+      }
+    }
+  }
 }

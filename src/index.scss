@@ -46,6 +46,10 @@ body {
     width: 80%;
     margin-inline: auto;
     padding-block: 2rem;
+
+    @media (max-width: 1200px) {
+      width: 90%;
+    }
   }
 }
 

@@ -9,6 +9,12 @@
       width: 100%;
       border-collapse: collapse;
 
+      tr.no-data {
+        td {
+          text-align: center;
+        }
+      }
+
       td, th {
         padding: .6rem;
         text-align: left;

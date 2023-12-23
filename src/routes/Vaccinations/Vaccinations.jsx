@@ -1,6 +1,7 @@
 import {useState} from "react";
 import dayjs from "dayjs";
 import Button from "../../components/Button/Button.jsx";
+import {CenteredLoader} from "../../components/Loader/Loader.jsx";
 import AddVaccination from "./parts/AddVaccination.jsx";
 import AddIcon from "../../icons/AddIcon.jsx";
 import EditIcon from "../../icons/EditIcon.jsx";
@@ -59,8 +60,12 @@ const Vaccinations = ({appointment}) => {
                             </td>
                         </tr>
                     })}
+                    {vaccinations && vaccinations.length === 0 && <tr className={'no-data'}>
+                        <td colSpan={6}>Brak danych.</td>
+                    </tr>}
                     </tbody>
                 </table>
+                {!vaccinations && <CenteredLoader/>}
             </div>
             <div className="buttons">
                 <Button text={'Dodaj'} onClick={() => setAddMode(true)} bgColor={colors.green} textColor={colors.white}

@@ -1,12 +1,13 @@
 import {useState} from "react";
 import dayjs from "dayjs";
 import Button from "../../components/Button/Button.jsx";
-import {colors} from "../../constants/colors.js";
+import {CenteredLoader} from "../../components/Loader/Loader.jsx";
 import {useAppointmentStore} from "../../store/appointmentStore.js";
 import {useDoctorStore} from "../../store/doctorStore.js";
 import AddIcon from "../../icons/AddIcon.jsx";
 import AddAppointment from "./parts/AddAppointment.jsx";
 import Appointment from "./parts/Appointment.jsx";
+import {colors} from "../../constants/colors.js";
 
 import './Appointments.scss';
 
@@ -59,8 +60,12 @@ const Appointments = ({patient}) => {
                             <td style={{overflowX: 'hidden'}}>{a?.notes.slice(0, 255) || 'Brak'}</td>
                         </tr>
                     })}
+                    {appointments && appointments.length === 0 && <tr className={'no-data'}>
+                        <td colSpan={4}>Brak danych.</td>
+                    </tr>}
                     </tbody>
                 </table>
+                {!appointments && <CenteredLoader/>}
             </div>
             <div className="buttons">
                 <Button text={'Dodaj'} onClick={() => setAddMode(true)} bgColor={colors.green} textColor={colors.white}
