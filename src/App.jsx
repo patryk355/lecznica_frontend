@@ -37,24 +37,23 @@ const App = () => {
         const {setSicknesses} = useSicknessStore((state) => state);
 
         const fetchData = useCallback(async () => {
-            const clientsResponse = await axios.get('/clients')
-            const patientsResponse = await axios.get('/patients')
             const chartsResponse = await axios.get('/charts')
-            const appointmentsResponse = await axios.get('/appointments')
-            const doctorsResponse = await axios.get('/doctors')
-            const sicknessesResponse = await axios.get('/sicknesses')
-            const prescriptionsResponse = await axios.get('/prescriptions')
-            const treatmentsResponse = await axios.get('/treatments')
-            const vaccinationsResponse = await axios.get('/vaccinations')
-
-            setClients(clientsResponse.data);
-            setPatients(patientsResponse.data);
             setCharts(chartsResponse.data);
+            const patientsResponse = await axios.get('/patients')
+            setPatients(patientsResponse.data);
+            const clientsResponse = await axios.get('/clients')
+            setClients(clientsResponse.data);
+            const appointmentsResponse = await axios.get('/appointments')
             setAppointments(appointmentsResponse.data)
+            const doctorsResponse = await axios.get('/doctors')
             setDoctors(doctorsResponse.data);
+            const sicknessesResponse = await axios.get('/sicknesses')
             setSicknesses(sicknessesResponse.data);
+            const prescriptionsResponse = await axios.get('/prescriptions')
             setPrescriptions(prescriptionsResponse.data);
+            const treatmentsResponse = await axios.get('/treatments')
             setTreatments(treatmentsResponse.data);
+            const vaccinationsResponse = await axios.get('/vaccinations')
             setVaccinations(vaccinationsResponse.data);
         }, [setClients, setPatients, setCharts, setAppointments, setDoctors, setSicknesses, setPrescriptions, setTreatments, setVaccinations]);
 

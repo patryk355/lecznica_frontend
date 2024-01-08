@@ -26,7 +26,7 @@ const Patients = () => {
     const {clients} = useClientStore((state) => state);
     const [isLoading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
     const [fullData, setFullData] = useState(null);
     const [filter, setFilter] = useState('active');
     const [addMode, setAddMode] = useState(false);
